@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UMANOVA へ移動中...</title>
+<style>
+  body { margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center;
+    background:#0f172a; font-family:-apple-system,'Segoe UI',sans-serif; color:#fff; }
+  .box { text-align:center; }
+  .logo { font-size:26px; font-weight:800;
+    background:linear-gradient(135deg,#d4af37,#f5c842); -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent; margin-bottom:10px; }
+  .msg { color:#94a3b8; font-size:14px; }
+  .spinner { width:28px; height:28px; border:3px solid #334155; border-top-color:#d4af37;
+    border-radius:50%; margin:18px auto; animation:spin 0.8s linear infinite; }
+  @keyframes spin { to { transform:rotate(360deg); } }
+  a { color:#d4af37; }
+</style>
+</head>
+<body>
+  <div class="box">
+    <div class="logo">UMANOVA</div>
+    <div class="spinner"></div>
+    <div class="msg" id="msg">最新のサーバーへ接続しています...</div>
+  </div>
+  <script>
+    fetch('./url.json?t=' + Date.now())
+      .then(r => r.json())
+      .then(d => {
+        if (d.url) {
+          document.getElementById('msg').textContent = '接続中... 自動で移動しない場合は下のリンクを押してください';
+          document.body.innerHTML += '<p style="text-align:center;margin-top:14px;"><a href="' + d.url + '">' + d.url + '</a></p>';
+          window.location.href = d.url;
+        } else {
+          document.getElementById('msg').textContent = 'サーバーが起動していません。PCで起動.batを実行してください。';
+        }
+      })
+      .catch(() => {
+        document.getElementById('msg').textContent = '接続先情報を取得できませんでした。少し待って再読み込みしてください。';
+      });
+  </script>
+</body>
+</html>
