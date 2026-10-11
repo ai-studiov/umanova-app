@@ -29,9 +29,12 @@
       .then(r => r.json())
       .then(d => {
         if (d.url) {
+          // 招待リンク用: ?to=/join&c=コード → 最新のサーバーの /join?c=コード へ(許可するのは /join だけ)
+          var q = new URLSearchParams(location.search), to = q.get('to') || '', c = q.get('c') || '';
+          var tgt = d.url + (to === '/join' ? '/join' + (c ? '?c=' + encodeURIComponent(c) : '') : '');
           document.getElementById('msg').textContent = '接続中... 自動で移動しない場合は下のリンクを押してください';
-          document.body.innerHTML += '<p style="text-align:center;margin-top:14px;"><a href="' + d.url + '">' + d.url + '</a></p>';
-          window.location.href = d.url;
+          document.body.innerHTML += '<p style="text-align:center;margin-top:14px;"><a href="' + tgt + '">' + tgt + '</a></p>';
+          window.location.href = tgt;
         } else {
           document.getElementById('msg').textContent = 'サーバーが起動していません。PCで起動.batを実行してください。';
         }
